@@ -9,11 +9,7 @@ $ curl -X 'POST' 'http://127.0.0.1:8000/predict_obj' \
 """
 
 
-import numpy as np
-import pandas as pd
 from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import List
 import json
 from DQN.dqn_agent import DQNAgent
 from cube_env import OLL_cube, PLL_cube, SpeedCube, MAX_EXPLO
@@ -135,6 +131,6 @@ async def predict_pll(scramble: str):
     else:
         return solution
 
-if __name__ == '__main__':
-    from os import environ
-    app.run(debug=False, port=environ.get("PORT", 5000), host='0.0.0.0')
+# if __name__ == '__main__':
+#     from os import environ
+#     app.run(debug=False, port=environ.get("PORT", 5000), host='0.0.0.0')

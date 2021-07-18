@@ -1,1 +1,1 @@
-web: uvicorn AI_cube_api:app --host=0.0.0.0 --port=${PORT:-5000}
+web: gunicorn -w 4 -k uvicorn.workers.UvicornWorker AI_cube_apy:app
