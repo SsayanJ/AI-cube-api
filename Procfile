@@ -1,1 +1,1 @@
-web: gunicorn -w 4 -k uvicorn.workers.UvicornWorker AI_cube_apy:app
+web: gunicorn -w 4 -k uvicorn.workers.UvicornWorker AI_cube_api:app
