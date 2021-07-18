@@ -1,0 +1,60 @@
+speedcubedbcom names;
+OLL1;R U2 R2 F R F' U2 R' F R F'
+OLL2;F R' F' R U2 F R' F' R2 U2 R'
+OLL3;R' F2 R2 U2 R' F R U2 R2 F2 R
+OLL4;R' F2 R2 U2 R' F' R U2 R2 F2 R
+OLL5;F R U R' U' F' U' F R U R' U' F'
+OLL6;R U R2 F R F2 U F
+OLL7;F R' F' R U2 R U2 R'
+OLL8;R U2 R' U2 R' F R F'
+OLL9;R U R' U' R' F R2 U R' U' F'
+OLL10;R U R' U R' F R F' R U2 R'
+OLL11;F' L' U' L U F U F R U R' U' F'
+OLL12;F R U R' U' F' U F R U R' U' F'
+OLL13;F U R U2 R' U' R U R' F'
+OLL14;R' F R U R' F' R F U' F'
+OLL15;R' F' R L' U' L U R' F R
+OLL16;R' F R U R' U' F' R U' R' U2 R
+OLL17;R U R' U R' F R F' U2 R' F R F'
+OLL18;R U2 R' F' U2 F R U' R2 F R F'
+OLL19;F R' F' R U R U' R' U' F R U R' U' F'
+OLL20;R U R' U' R' F R F' R U2 R2 F R F' R U2 R'
+OLL21;R U R' U R U' R' U R U2 R'
+OLL22;R U2 R2 U' R2 U' R2 U2 R
+OLL23;R2 D R' U2 R D' R' U2 R'
+OLL24;R' U' R' D' R U R' D R2
+OLL25;R2 D R' U R D' R' U' R'
+OLL26;R U2 R' U' R U' R'
+OLL27;R U R' U R U2 R'
+OLL28;L R' F' L' R U2 L R' F' L' R
+OLL29;R U R' U' R U' R' F' U' F R U R'
+OLL30;F R' F R2 U' R' U' R U R' F2
+OLL31;R' U' F U R U' R' F' R
+OLL32;L U F' U' L' U L F L'
+OLL33;R U R' U' R' F R F'
+OLL34;R U R2 U' R' F R U R U' F'
+OLL35;R U2 R2 F R F' R U2 R'
+OLL36;R U R2 F' U' F U R2 U2 R'
+OLL37;F R' F' R U R U' R'
+OLL38;R U R' U R U' R' U' R' F R F'
+OLL39;L F' L' U' L U F U' L'
+OLL40;R' F R U R' U' F' U R
+OLL41;R U R' U R U2 R' F R U R' U' F'
+OLL42;R' U' R U' R' U2 R F R U R' U' F'
+OLL43;R' U' F' U F R
+OLL44;F U R U' R' F'
+OLL45;F R U R' U' F'
+OLL46;R' U' R' F R F' U R
+OLL47;F' L' U' L U L' U' L U F
+OLL48;F R U R' U' R U R' U' F'
+OLL49;R B' R2 F R2 B R2 F' R
+OLL50;R' F R2 B' R2 F' R2 B R' 
+OLL51;F U R U' R' U R U' R' F'
+OLL52;R' F' U' F U' R U R' U R
+OLL53;F R U R' U' F' R U R' U' R' F R F'
+OLL54;F R' F' R U2 F2 L F L' F
+OLL55;R' F U R U' R2 F' R2 U R' U' R
+OLL56;L' B' L U' R' U R U' R' U R L' B L
+OLL57;R L' U R' U' L R' F R F'
+setup U;U
+setup U';U'

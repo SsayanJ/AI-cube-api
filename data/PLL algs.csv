@@ -1,0 +1,24 @@
+speedcom order;name;alg
+PLL1;Aa;R' B' R2 D R' U' R D' R' U R' B R
+PLL2;Ab;R' B' R U' R D R' U R D' R2 B R
+PLL3;E;R' U' R' D' R U' R' D R U R' D' R U R' D R2
+PLL4;F;R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R
+PLL5;Ga;R2 U R' U R' U' R U' R2 D U' R' U R D'
+PLL6;Gb;R' U' R U D' R2 U R' U R U' R U' R2 D
+PLL7;Gc;R2 U' R U' R U R' U R2 D' U R U' R' D
+PLL8;Gd;R U R' U' D R2 U' R U' R' U R' U R2 D'
+PLL9;H;R2 U2 R U2 R2 U2 R2 U2 R U2 R2
+PLL10;Ja;L' U' L F L' U' L U L F' L2 U L
+PLL11;Jb;R U R' F' R U R' U' R' F R2 U' R'
+PLL12;Na;R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'
+PLL13;Nb;R' U R U' R' F' U' F R U R' F R' F' R U' R
+PLL14;Ra;R U' R' U' R U R D R' U' R D' R' U2 R'
+PLL15;Rb;R' U2 R U2 R' F R U R' U' R' F' R2
+PLL16;T;R U R' U' R' F R2 U' R' U' R U R' F'
+PLL17;Ua;R U R' U R' U' R2 U' R' U R' U R
+PLL18;Ub;R' U R' U' R' U' R' U R U R2
+PLL19;V;R' U R' U' R D' R' D R' U D' R2 U' R2 D R2
+PLL20;Y;F R U' R' U' R U R' F' R U R' U' R' F R F'
+PLL21;Z;R U R' U R' U' R' U R U' R' U' R2 U R
+Setup U;;U
+Setup U';;U'

@@ -1,0 +1,16 @@
+{"cross_solver":{
+    "model_name": "basic_DQN", 
+    "model_type": "Deep Q Learning", 
+    "model_filename": "cross_model.h5", 
+    "model_version": "v0"},
+"oll_solver": {
+    "model_name": "basic_DQN", 
+    "model_type": "Deep Q Learning", 
+    "model_filename": "oll_model.h5", 
+    "model_version": "v0"},
+"pll_solver": {
+    "model_name": "basic_DQN", 
+    "model_type": "Deep Q Learning", 
+    "model_filename": "pll_model.h5", 
+    "model_version": "v0"}
+}
