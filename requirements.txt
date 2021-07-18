@@ -2,4 +2,3 @@ fastapi
 numpy
 uvicorn
 tensorflow-cpu
-json
