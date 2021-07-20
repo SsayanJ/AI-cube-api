@@ -59,7 +59,9 @@ class DQNAgent(object):
             self.epsilon_dec if self.epsilon > self.epsilon_min else self.epsilon_min
 
     def save_model(self):
+        # self.q_eval.save(self.model_file)
         self.q_eval.save(self.model_file)
 
     def load_model(self):
+        # self.q_eval = load_model(self.model_file)
         self.q_eval = load_model(self.model_file)

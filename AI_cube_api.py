@@ -28,18 +28,18 @@ actions_cross = 12
 actions_oll = 59
 actions_pll = 23
 
-cross_solver = DQNAgent(gamma=0.99, epsilon=1.0, alpha=0.0005, input_dims=input_cross,
+cross_solver = DQNAgent(gamma=0.99, epsilon=0.0, alpha=0.0005, input_dims=input_cross,
                         n_actions=actions_cross, mem_size=1_000_000, epsilon_end=0.01,
                         batch_size=64, fname=cross_model)
 
 cross_solver.load_model()
 
-oll_solver = DQNAgent(gamma=0.99, epsilon=1.0, alpha=0.0005, input_dims=input_oll,
+oll_solver = DQNAgent(gamma=0.99, epsilon=0.0, alpha=0.0005, input_dims=input_oll,
                       n_actions=actions_oll, mem_size=1_000_000, epsilon_end=0.01,
                       batch_size=64, fname=oll_model)
 oll_solver.load_model()
 
-pll_solver = DQNAgent(gamma=0.99, epsilon=1.0, alpha=0.0005, input_dims=input_pll,
+pll_solver = DQNAgent(gamma=0.99, epsilon=0.0, alpha=0.0005, input_dims=input_pll,
                       n_actions=actions_pll, mem_size=1_000_000, epsilon_end=0.01,
                       batch_size=64, fname=pll_model)
 pll_solver.load_model()

@@ -22,20 +22,17 @@ def get_algs(filename):
     return moves
 
 
-PLL_scrambles = 'data\\PLL_scrambles_unique.txt'
-OLL_scrambles = 'data\\OLL_scrambles_unique.txt'
-OLL_algs = 'data\\OLL algs.csv'
-PLL_algs = 'data\\PLL algs.csv'
-
+OLL_algs = 'data/OLL algs.csv'
+PLL_algs = 'data/PLL algs.csv'
 
 oll_moves = get_algs(OLL_algs)
 pll_moves = get_algs(PLL_algs)
 
-pll_scrambles = textfile_to_list(PLL_scrambles)
-oll_scrambles = textfile_to_list(OLL_scrambles)
-
 cube_colors = {0: "W", 1: "G", 2: "R", 3: 'B', 4: "O", 5: 'Y'}
 move_list = ["R", "L", "U", "D", "F", "B", "Rp", "Lp", "Up", "Dp", "Fp", "Bp"]
+F2L1_moves = ["U", "U'", "R U R'", "R U' R'", "R' U R", "R' U' R", "L U L'",
+              "L U' L'", "L' U L", "L' U L", "F' U F", "F' U' F", "B U B'",
+              "B U' B'", "B' U B", "B' U' B", "F U F'", "F U' F'"]
 
 SCRAMBLE_SIZE = 15
 MAX_EXPLO = 50
