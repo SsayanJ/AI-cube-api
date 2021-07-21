@@ -22,10 +22,10 @@ class Scramble(BaseModel):
 app = FastAPI()
 
 # Loading models
-f2l1_model = 'models/f2l1_model.h5'
-f2l2_model = 'models/f2l2_model.h5'
-f2l3_model = 'models/f2l3_model.h5'
-f2l4_model = 'models/f2l4_model.h5'
+f2l1_model = 'models/F2L1_model.h5'
+f2l2_model = 'models/F2L2_model.h5'
+f2l3_model = 'models/F2L3_model.h5'
+f2l4_model = 'models/F2L4_model.h5'
 cross_model = "models/cross_model15moves-16Jul.h5"
 oll_model = 'models/OLL_model_good2k.h5'
 pll_model = 'models/PLL_model_good10k.h5'
