@@ -7,12 +7,14 @@ $ uvicorn AI_cube_api:app --reload
   -Outputs: solution to the step as string ("D L' U' R'") 
 """
 
-
+import numpy as np
 from fastapi import FastAPI
 import json
 from DQN.dqn_agent import DQNAgent
 from cube_env import OLL_cube, PLL_cube, SpeedCube, MAX_EXPLO, F2L1_cube, F2L2_cube, F2L3_cube, F2L4_cube
 from pydantic import BaseModel
+from tensorflow.keras.models import load_model
+from fastapi.middleware.cors import CORSMiddleware
 
 
 class Scramble(BaseModel):
@@ -20,6 +22,17 @@ class Scramble(BaseModel):
 
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # Loading models
 f2l1_model = 'models/F2L1_model.h5'
@@ -42,45 +55,20 @@ actions_f2l2 = 14
 actions_f2l3 = 10
 actions_f2l4 = 6
 
-cross_solver = DQNAgent(gamma=0.99, epsilon=0.0, alpha=0.0005, input_dims=input_cross,
-                        n_actions=actions_cross, mem_size=1_000_000, epsilon_end=0.01,
-                        batch_size=64, fname=cross_model)
 
-cross_solver.load_model()
+cross_solver = load_model(cross_model)
 
-f2l1_solver = DQNAgent(gamma=0.99, epsilon=0.0, alpha=0.0005, input_dims=input_f2l,
-                       n_actions=actions_f2l1, mem_size=1_000_000, epsilon_end=0.01,
-                       batch_size=64, fname=f2l1_model)
+f2l1_solver = load_model(f2l1_model)
 
-f2l1_solver.load_model()
+f2l2_solver = load_model(f2l2_model)
 
-f2l2_solver = DQNAgent(gamma=0.99, epsilon=0.0, alpha=0.0005, input_dims=input_f2l,
-                       n_actions=actions_f2l2, mem_size=1_000_000, epsilon_end=0.01,
-                       batch_size=64, fname=f2l2_model)
+f2l3_solver = load_model(f2l3_model)
 
-f2l2_solver.load_model()
+f2l4_solver = load_model(f2l4_model)
 
-f2l3_solver = DQNAgent(gamma=0.99, epsilon=0.0, alpha=0.0005, input_dims=input_f2l,
-                       n_actions=actions_f2l3, mem_size=1_000_000, epsilon_end=0.01,
-                       batch_size=64, fname=f2l3_model)
+oll_solver = load_model(oll_model)
 
-f2l3_solver.load_model()
-
-f2l4_solver = DQNAgent(gamma=0.99, epsilon=0.0, alpha=0.0005, input_dims=input_f2l,
-                       n_actions=actions_f2l4, mem_size=1_000_000, epsilon_end=0.01,
-                       batch_size=64, fname=f2l4_model)
-
-f2l4_solver.load_model()
-
-oll_solver = DQNAgent(gamma=0.99, epsilon=0.0, alpha=0.0005, input_dims=input_oll,
-                      n_actions=actions_oll, mem_size=1_000_000, epsilon_end=0.01,
-                      batch_size=64, fname=oll_model)
-oll_solver.load_model()
-
-pll_solver = DQNAgent(gamma=0.99, epsilon=0.0, alpha=0.0005, input_dims=input_pll,
-                      n_actions=actions_pll, mem_size=1_000_000, epsilon_end=0.01,
-                      batch_size=64, fname=pll_model)
-pll_solver.load_model()
+pll_solver = load_model(pll_model)
 
 
 def predict_f2l1(scramble: str):
@@ -91,7 +79,7 @@ def predict_f2l1(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = f2l1_solver.choose_action(obs)
+        action = np.argmax(f2l1_cube.predict(obs[np.newaxis, :]))
         solution += f2l1_cube.move_list[action] + " "
         next = f2l1_cube.step(action)
         observation_, _, done, _ = next
@@ -113,7 +101,7 @@ def predict_f2l2(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = f2l2_solver.choose_action(obs)
+        action = np.argmax(f2l2_cube.predict(obs[np.newaxis, :]))
         solution += f2l2_cube.move_list[action] + " "
         next = f2l2_cube.step(action)
         observation_, _, done, _ = next
@@ -135,7 +123,7 @@ def predict_f2l3(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = f2l3_solver.choose_action(obs)
+        action = np.argmax(f2l3_cube.predict(obs[np.newaxis, :]))
         solution += f2l3_cube.move_list[action] + " "
         next = f2l3_cube.step(action)
         observation_, _, done, _ = next
@@ -157,7 +145,7 @@ def predict_f2l4(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = f2l4_solver.choose_action(obs)
+        action = np.argmax(f2l4_cube.predict(obs[np.newaxis, :]))
         solution += f2l4_cube.move_list[action] + " "
         next = f2l4_cube.step(action)
         observation_, _, done, _ = next
@@ -195,7 +183,7 @@ async def predict_cross(scramble: Scramble):
     solution = ""
     done = False
     while not done:
-        action = cross_solver.choose_action(obs)
+        action = np.argmax(cross_solver.predict(obs[np.newaxis, :]))
         solution += cross_cube.move_list[action] + " "
         next = cross_cube.step(action)
         observation_, _, done, _ = next
@@ -244,8 +232,7 @@ async def predict_oll(scramble: Scramble):
     solution = ""
     done = False
     while not done:
-        action = oll_solver.choose_action(obs)
-        print(action)
+        action = np.argmax(oll_solver.predict(obs[np.newaxis, :]))
         try:
             solution += oll_cube.move_list[action] + " "
         except:
@@ -273,7 +260,7 @@ async def predict_pll(scramble: Scramble):
     solution = ""
     done = False
     while not done:
-        action = pll_solver.choose_action(obs)
+        action = np.argmax(pll_solver.predict(obs[np.newaxis, :]))
         solution += pll_cube.move_list[action] + " "
         next = pll_cube.step(action)
         observation_, _, done, _ = next
@@ -285,7 +272,3 @@ async def predict_pll(scramble: Scramble):
         return "No PLL solution found for this scramble"
     else:
         return solution
-
-# if __name__ == '__main__':
-#     from os import environ
-#     app.run(debug=False, port=environ.get("PORT", 5000), host='0.0.0.0')
