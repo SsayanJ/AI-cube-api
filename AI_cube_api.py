@@ -35,10 +35,10 @@ app.add_middleware(
 
 
 # Loading models
-f2l1_model = 'models/F2L1_model.h5'
-f2l2_model = 'models/F2L2_model.h5'
-f2l3_model = 'models/F2L3_model.h5'
-f2l4_model = 'models/F2L4_model.h5'
+f2l1_model = 'models/0720-F2L1_model.h5'
+f2l2_model = 'models/0720-F2L2_model.h5'
+f2l3_model = 'models/0720-F2L3_model.h5'
+f2l4_model = 'models/0720-F2L4_model.h5'
 cross_model = "models/cross_model15moves-16Jul.h5"
 oll_model = 'models/OLL_model_good2k.h5'
 pll_model = 'models/PLL_model_good10k.h5'
@@ -79,7 +79,7 @@ def predict_f2l1(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = np.argmax(f2l1_cube.predict(obs[np.newaxis, :]))
+        action = np.argmax(f2l1_solver.predict(obs[np.newaxis, :]))
         solution += f2l1_cube.move_list[action] + " "
         next = f2l1_cube.step(action)
         observation_, _, done, _ = next
@@ -101,7 +101,7 @@ def predict_f2l2(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = np.argmax(f2l2_cube.predict(obs[np.newaxis, :]))
+        action = np.argmax(f2l2_solver.predict(obs[np.newaxis, :]))
         solution += f2l2_cube.move_list[action] + " "
         next = f2l2_cube.step(action)
         observation_, _, done, _ = next
@@ -123,7 +123,7 @@ def predict_f2l3(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = np.argmax(f2l3_cube.predict(obs[np.newaxis, :]))
+        action = np.argmax(f2l3_solver.predict(obs[np.newaxis, :]))
         solution += f2l3_cube.move_list[action] + " "
         next = f2l3_cube.step(action)
         observation_, _, done, _ = next
@@ -145,7 +145,7 @@ def predict_f2l4(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = np.argmax(f2l4_cube.predict(obs[np.newaxis, :]))
+        action = np.argmax(f2l4_solver.predict(obs[np.newaxis, :]))
         solution += f2l4_cube.move_list[action] + " "
         next = f2l4_cube.step(action)
         observation_, _, done, _ = next
@@ -173,11 +173,9 @@ async def return_model_config():
     return model_config
 
 
-@app.post('/predict_cross')
-async def predict_cross(scramble: Scramble):
+def _predict_cross(scramble: str):
     cross_cube = SpeedCube()
-    scramble_str = scramble.dict()["scramble_s"]
-    cross_cube.scramble(scramble_str)
+    cross_cube.scramble(scramble)
     obs = cross_cube.get_yellow_edges()
     i = 0
     solution = ""
@@ -197,36 +195,33 @@ async def predict_cross(scramble: Scramble):
         return solution
 
 
-@app.post('/predict_f2l')
-async def predict_f2l(scramble: Scramble):
-    scramble_str = scramble.dict()["scramble_s"]
-    solution = predict_f2l1(scramble_str)
-    print(solution)
+def _predict_f2l(scramble: str):
+    solution = predict_f2l1(scramble)
     if solution == None:
         return "No F2L solution found"
-    f2l2_solution = predict_f2l2(scramble_str + " " + solution)
+    f2l2_solution = predict_f2l2(scramble + " " + solution)
     if f2l2_solution == None:
         return "No F2L solution found"
     else:
         solution = solution + " " + f2l2_solution
-    f2l3_solution = predict_f2l3(scramble_str + " " + solution)
+    f2l3_solution = predict_f2l3(scramble + " " + solution)
     if f2l3_solution == None:
         return "No F2L solution found"
     else:
         solution = solution + " " + f2l3_solution
-    f2l4_solution = predict_f2l4(scramble_str + " " + solution)
+    f2l4_solution = predict_f2l4(scramble + " " + solution)
+    print(solution)
     if f2l4_solution == None:
         return "No F2L solution found"
     else:
         solution = solution + " " + f2l4_solution
+    print(solution)
     return solution
 
 
-@app.post('/predict_oll')
-async def predict_oll(scramble: Scramble):
+def _predict_oll(scramble: str):
     oll_cube = OLL_cube()
-    scramble_str = scramble.dict()["scramble_s"]
-    oll_cube.scramble(scramble_str)
+    oll_cube.scramble(scramble)
     obs = oll_cube.get_oll_state()
     i = 0
     solution = ""
@@ -250,11 +245,9 @@ async def predict_oll(scramble: Scramble):
         return solution
 
 
-@app.post('/predict_pll')
-async def predict_pll(scramble: Scramble):
+def _predict_pll(scramble: str):
     pll_cube = PLL_cube()
-    scramble_str = scramble.dict()["scramble_s"]
-    pll_cube.scramble(scramble_str)
+    pll_cube.scramble(scramble)
     obs = pll_cube.get_pll_state()
     i = 0
     solution = ""
@@ -272,3 +265,64 @@ async def predict_pll(scramble: Scramble):
         return "No PLL solution found for this scramble"
     else:
         return solution
+
+
+@app.post('/predict_cross')
+async def predict_cross(scramble: Scramble):
+    scramble_str = scramble.dict()["scramble_s"]
+    return _predict_cross(scramble_str)
+
+
+@app.post('/predict_f2l')
+async def predict_f2l(scramble: Scramble):
+    scramble_str = scramble.dict()["scramble_s"]
+    return _predict_f2l(scramble_str)
+
+
+@app.post('/predict_oll')
+async def predict_oll(scramble: Scramble):
+    print('in')
+    scramble_str = scramble.dict()["scramble_s"]
+    print('out', scramble_str)
+    s = _predict_oll(scramble_str)
+    print(s)
+    return s
+
+
+@app.post('/predict_pll')
+async def predict_pll(scramble: Scramble):
+    scramble_str = scramble.dict()["scramble_s"]
+    return _predict_pll(scramble_str)
+
+
+@app.post('/solve_cube')
+async def solve_cube(scramble: Scramble):
+    scramble_str = scramble.dict()["scramble_s"]
+    solution = {"original_scramble": scramble_str,
+                "solution_found": True}
+    cross_sol = _predict_cross(scramble_str)
+    solution["step_solutions"] = {"Cross": cross_sol.split(" ")}
+    if cross_sol.startswith("No"):
+        solution['solution_found'] = False
+        return solution
+    step_scramble = scramble_str + " " + cross_sol
+    f2l_sol = _predict_f2l(step_scramble)
+    solution["step_solutions"]["F2L"] = f2l_sol.split(" ")
+    print(f2l_sol)
+    if f2l_sol.startswith("No"):
+        solution['solution_found'] = False
+        return solution
+    step_scramble = step_scramble + " " + f2l_sol
+    oll_sol = _predict_oll(step_scramble)
+    solution["step_solutions"]["OLL"] = oll_sol.split(" ")
+    print("oll", oll_sol)
+    if oll_sol.startswith("No"):
+        solution['solution_found'] = False
+        return solution
+    step_scramble = step_scramble + " " + oll_sol
+    pll_sol = _predict_pll(step_scramble)
+    solution["step_solutions"]["PLL"] = pll_sol.split(" ")
+    if pll_sol.startswith("No"):
+        solution['solution_found'] = False
+        return solution
+    return solution
