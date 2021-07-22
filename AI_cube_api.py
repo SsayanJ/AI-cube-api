@@ -269,13 +269,13 @@ def _predict_cross(scramble: str):
     solution = _predict_daisy(scramble)
     if solution.startswith("No"):
         return "No daisy solution found"
-    print(solution)
+    # print(solution)
     cross_solution = _predict_cross_from_daisy(scramble + " " + solution)
     if cross_solution.startswith("No"):
         return "No Cross solution found"
     else:
         solution = solution + " " + cross_solution
-        return solution.strip()
+        return solution.strip().replace('p', "'")
 
 
 def _predict_f2l(scramble: str):
