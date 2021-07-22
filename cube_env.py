@@ -31,6 +31,9 @@ pll_moves = get_algs(PLL_algs)
 
 cube_colors = {0: "W", 1: "G", 2: "R", 3: 'B', 4: "O", 5: 'Y'}
 move_list = ["R", "L", "U", "D", "F", "B", "Rp", "Lp", "Up", "Dp", "Fp", "Bp"]
+daisy_moves = ["R", "L", "F", "B", "Rp", "Lp", "Fp", "Bp"]
+cross_from_daisy_moves = ["R2", "L2", "U", "F2", "B2", "Up"]
+
 # F2L1 - Front-Right F2L
 F2L1_moves = ["U", "U'", "R U R'", "R U' R'", "R' U R", "R' U' R", "L U L'",
               "L U' L'", "L' U L", "L' U L", "F' U F", "F' U' F", "B U B'",
@@ -49,7 +52,7 @@ F2L3_moves = ["U", "U'", "L U L'", "L U' L'", "L' U L", "L' U L",
 F2L4_moves = ["U", "U'", "L' U L", "L' U' L", "F U F'", "F U' F'"]
 
 
-SCRAMBLE_SIZE = 10
+SCRAMBLE_SIZE = 30
 MAX_EXPLO = 50
 CROSS_SUCCESS = 50
 
@@ -431,6 +434,13 @@ class SpeedCube():
                 f2l1_state.append(list(-np.ones(len(p))))
         return np.array(flatten(f2l1_state))
 
+    def get_daisy(self):
+        self.daisy_pieces = flatten(
+            [e if 5 in e else [-1, -1] for e in self.get_edges()])
+        self.daisy_pieces = np.array(
+            [e if e == 5 else -1 for e in self.daisy_pieces])
+        return self.daisy_pieces
+
 
 class PLL_cube(SpeedCube):
     def __init__(self):
@@ -750,6 +760,99 @@ class F2Lpart1_cube(SpeedCube):
             # print(f'{self._solved_episodes}/{self._failed_episodes+self._solved_episodes} solved cross')
             self._episode_ended = True
         return f2l1_state, float(step_reward), self._episode_ended, ''
+
+
+class Daisy_cube(SpeedCube):
+    def __init__(self):
+        super().__init__()
+        self.solved_daisy = self.get_solved_daisy()
+        self.move_list = daisy_moves
+
+    def reset(self):
+        self._state = 0
+        self._reward = 0
+        self._episode_ended = False
+        self.status = np.array([np.zeros(9)*3, np.ones(9), np.ones(9)*2, np.ones(9)*3,
+                                np.ones(9)*4, np.ones(9)*5], dtype=np.int32)
+        # scramble_daisy = np.random.choice(full_scramble_list)
+        scramble_s = np.random.randint(1, SCRAMBLE_SIZE)
+        # scramble_s = np.random.randint(max(1, self.scramble_size-3), self.scramble_size+1)
+        random_actions = np.random.randint(
+            len(self.move_list), size=scramble_s)
+        self._initial_scramble = [self.move_list[i] for i in random_actions]
+        self.scramble(self._initial_scramble)
+        return self.get_daisy()
+
+    def step(self, action):
+        action = self.move_list[action]
+        if action != "":
+            self.scramble(action)
+        daisy_state = self.get_daisy()
+        if np.all(self.solved_daisy == daisy_state):
+            step_reward = 20
+            self._episode_ended = True
+            # print('Daisy solved:', self._state+1)
+        else:
+            step_reward = -1
+
+        self._reward += step_reward
+        self._state += 1
+
+        if self._episode_ended or self._state > MAX_EXPLO:
+            if self._episode_ended:
+                self._solved_episodes += 1
+            else:
+                self._failed_episodes += 1
+            self._episode_ended = True
+        return daisy_state, float(step_reward), self._episode_ended, ''
+
+    def get_solved_daisy(self):
+        daisy = - np.ones(24)
+        for e in range(0, 7, 2):
+            daisy[e] = 5
+        return np.array(daisy)
+
+
+class Cross_from_daisy(SpeedCube):
+    def __init__(self):
+        super().__init__()
+        self.solved_cross = self.get_yellow_edges()
+        self.move_list = cross_from_daisy_moves
+
+    def reset(self):
+        self._state = 0
+        self._reward = 0
+        self._episode_ended = False
+        self.status = np.array([np.zeros(9)*3, np.ones(9), np.ones(9)*2, np.ones(9)*3,
+                                np.ones(9)*4, np.ones(9)*5], dtype=np.int32)
+        self.scramble(np.random.choice(daisy_scrambles))
+        return self.get_yellow_edges()
+
+    def step(self, action):
+        action = self.move_list[action]
+        if action != "":
+            getattr(self, action)()
+        yellow_edges = self.get_yellow_edges()
+
+        if np.all(self.solved_cross == yellow_edges):
+            step_reward = 20
+            self._episode_ended = True
+            print('cross solved:', self._state+1)
+        else:
+            step_reward = -1
+
+        self._reward += step_reward
+        self._state += 1
+
+        if self._episode_ended or self._state > MAX_EXPLO:
+            if self._episode_ended:
+                print('episode ended:', self._state)
+                self._solved_episodes += 1
+            else:
+                self._failed_episodes += 1
+            self._episode_ended = True
+
+        return yellow_edges, float(step_reward), self._episode_ended, 'no'
 
 
 def main():

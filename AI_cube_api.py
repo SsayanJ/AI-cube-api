@@ -11,7 +11,7 @@ import numpy as np
 from fastapi import FastAPI
 import json
 from DQN.dqn_agent import DQNAgent
-from cube_env import OLL_cube, PLL_cube, SpeedCube, MAX_EXPLO, F2L1_cube, F2L2_cube, F2L3_cube, F2L4_cube
+from cube_env import OLL_cube, PLL_cube, SpeedCube, MAX_EXPLO, F2L1_cube, F2L2_cube, F2L3_cube, F2L4_cube, Daisy_cube, Cross_from_daisy
 from pydantic import BaseModel
 from tensorflow.keras.models import load_model
 from fastapi.middleware.cors import CORSMiddleware
@@ -42,7 +42,8 @@ f2l4_model = 'models/0720-F2L4_model.h5'
 cross_model = "models/cross_model15moves-16Jul.h5"
 #oll_model = 'models/OLL_model_good2k.h5'
 pll_model = 'models/PLL_model_good10k.h5'
-
+daisy_model = 'models/0721-daisy_model.h5'
+cross_from_daisy_model = 'models/Cross_from_daisy_model.h5'
 oll_model = 'models/oll_model'
 
 input_cross = 24
@@ -71,6 +72,10 @@ f2l4_solver = load_model(f2l4_model)
 oll_solver = load_model(oll_model)
 
 pll_solver = load_model(pll_model)
+
+daisy_solver = load_model(daisy_model)
+
+cross_from_daisy_solver = load_model(cross_from_daisy_model)
 
 
 def _cancel_moves(scramble):
@@ -194,17 +199,61 @@ with open("models/model_config.json") as f:
     model_config = json.load(f)
 
 
-def _predict_cross(scramble: str):
-    cross_cube = SpeedCube()
-    cross_cube.scramble(scramble)
-    obs = cross_cube.get_yellow_edges()
+# def _predict_cross(scramble: str):
+#     cross_cube = SpeedCube()
+#     cross_cube.scramble(scramble)
+#     obs = cross_cube.get_yellow_edges()
+#     i = 0
+#     solution = ""
+#     done = False
+#     while not done:
+#         action = np.argmax(cross_solver.predict(obs[np.newaxis, :]))
+#         solution += cross_cube.move_list[action] + " "
+#         next = cross_cube.step(action)
+#         observation_, _, done, _ = next
+#         if done:
+#             break
+#         obs = observation_
+#         i += 1
+#     if i >= MAX_EXPLO:
+#         return "No cross solution found for this scramble"
+#     else:
+#         return solution.strip()
+
+
+def _predict_daisy(scramble: str):
+    daisy_cube = Daisy_cube()
+    daisy_cube.scramble(scramble)
+    obs = daisy_cube.get_daisy()
     i = 0
     solution = ""
     done = False
     while not done:
-        action = np.argmax(cross_solver.predict(obs[np.newaxis, :]))
-        solution += cross_cube.move_list[action] + " "
-        next = cross_cube.step(action)
+        action = np.argmax(daisy_solver.predict(obs[np.newaxis, :]))
+        solution += daisy_cube.move_list[action] + " "
+        next = daisy_cube.step(action)
+        observation_, _, done, _ = next
+        if done:
+            break
+        obs = observation_
+        i += 1
+    if i >= MAX_EXPLO:
+        return "No daisy solution found for this scramble"
+    else:
+        return solution.strip()
+
+
+def _predict_cross_from_daisy(scramble: str):
+    cross_daisy_cube = Cross_from_daisy()
+    cross_daisy_cube.scramble(scramble)
+    obs = cross_daisy_cube.get_yellow_edges()
+    i = 0
+    solution = ""
+    done = False
+    while not done:
+        action = np.argmax(cross_from_daisy_solver.predict(obs[np.newaxis, :]))
+        solution += cross_daisy_cube.move_list[action] + " "
+        next = cross_daisy_cube.step(action)
         observation_, _, done, _ = next
         if done:
             break
@@ -216,22 +265,35 @@ def _predict_cross(scramble: str):
         return solution.strip()
 
 
+def _predict_cross(scramble: str):
+    solution = _predict_daisy(scramble)
+    if solution.startswith("No"):
+        return "No daisy solution found"
+    print(solution)
+    cross_solution = _predict_cross_from_daisy(scramble + " " + solution)
+    if cross_solution.startswith("No"):
+        return "No Cross solution found"
+    else:
+        solution = solution + " " + cross_solution
+        return solution.strip()
+
+
 def _predict_f2l(scramble: str):
     solution = predict_f2l1(scramble)
-    if solution == None:
+    if solution.startswith("No"):
         return "No F2L solution found"
     f2l2_solution = predict_f2l2(scramble + " " + solution)
-    if f2l2_solution == None:
+    if f2l2_solution.startswith("No"):
         return "No F2L solution found"
     else:
         solution = solution + " " + f2l2_solution
     f2l3_solution = predict_f2l3(scramble + " " + solution)
-    if f2l3_solution == None:
+    if f2l3_solution.startswith("No"):
         return "No F2L solution found"
     else:
         solution = solution + " " + f2l3_solution
     f2l4_solution = predict_f2l4(scramble + " " + solution)
-    if f2l4_solution == None:
+    if f2l4_solution.startswith("No"):
         return "No F2L solution found"
     else:
         solution = solution + " " + f2l4_solution
@@ -247,7 +309,8 @@ def _predict_oll(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = np.argmax(oll_solver.predict(obs[np.newaxis, :].astype(np.float32)))
+        action = np.argmax(oll_solver.predict(
+            obs[np.newaxis, :].astype(np.float32)))
         solution += oll_cube.move_list[action] + " "
         next = oll_cube.step(action)
         observation_, _, done, _ = next
