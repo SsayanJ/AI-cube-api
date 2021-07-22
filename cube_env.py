@@ -57,16 +57,6 @@ MAX_EXPLO = 50
 CROSS_SUCCESS = 50
 
 
-def print_face(face):
-    for i in range(3):
-        print(cube_colors[face[i*3]],
-              cube_colors[face[i*3+1]], cube_colors[face[i*3+2]])
-
-
-SCRAMBLE_SIZE = 15
-MAX_EXPLO = 50
-
-
 class SpeedCube():
     def __init__(self):
         self.status = np.array([np.zeros(9)*3, np.ones(9), np.ones(9)*2, np.ones(9)*3, np.ones(9)*4,
@@ -104,7 +94,6 @@ class SpeedCube():
         if np.all(self.solved_cross_new == yellow_edges):
             step_reward = 20
             self._episode_ended = True
-            print('cross solved:', self._state+1)
         else:
             step_reward = -1
 
@@ -113,7 +102,6 @@ class SpeedCube():
 
         if self._episode_ended or self._state > MAX_EXPLO:
             if self._episode_ended:
-                print('episode ended:', self._state)
                 self._solved_episodes += 1
             else:
                 # print('no solution found:', self._state)
@@ -469,7 +457,6 @@ class PLL_cube(SpeedCube):
         if np.all(self.solved_pll == pll_state):
             step_reward = 20
             self._episode_ended = True
-            print('PLL solved:', self._state+1)
         elif action in ["U", "U'"]:
             step_reward = -1
         else:
@@ -480,7 +467,6 @@ class PLL_cube(SpeedCube):
 
         if self._episode_ended or self._state > MAX_EXPLO:
             if self._episode_ended:
-                print('episode ended:', self._state)
                 self._solved_episodes += 1
             else:
                 # print('no solution found:', self._state)
@@ -519,7 +505,6 @@ class OLL_cube(SpeedCube):
         if np.all(self.solved_oll == oll_state):
             step_reward = 20
             self._episode_ended = True
-            print('OLL solved:', self._state+1)
         elif action in ["U", "U'"]:
             step_reward = -1
         else:
@@ -530,7 +515,6 @@ class OLL_cube(SpeedCube):
 
         if self._episode_ended or self._state > MAX_EXPLO:
             if self._episode_ended:
-                print('episode ended:', self._state)
                 self._solved_episodes += 1
             else:
                 # print('no solution found:', self._state)
@@ -566,7 +550,6 @@ class F2L1_cube(SpeedCube):
         if np.all(self.solved_f2l1 == f2l1_state):
             step_reward = 20
             self._episode_ended = True
-            print('F2L1 solved:', self._state+1)
         elif action in ["U", "U'"]:
             step_reward = -1
         else:
@@ -577,7 +560,6 @@ class F2L1_cube(SpeedCube):
 
         if self._episode_ended or self._state > MAX_EXPLO:
             if self._episode_ended:
-                print('episode ended:', self._state)
                 self._solved_episodes += 1
             else:
                 self._failed_episodes += 1
@@ -610,7 +592,6 @@ class F2L2_cube(SpeedCube):
         if np.all(self.solved_f2l2 == f2l2_state):
             step_reward = 20
             self._episode_ended = True
-            print('F2L2 solved:', self._state+1)
         elif action in ["U", "U'"]:
             step_reward = -1
         else:
@@ -621,7 +602,6 @@ class F2L2_cube(SpeedCube):
 
         if self._episode_ended or self._state > MAX_EXPLO:
             if self._episode_ended:
-                print('episode ended:', self._state)
                 self._solved_episodes += 1
             else:
                 self._failed_episodes += 1
@@ -654,7 +634,6 @@ class F2L3_cube(SpeedCube):
         if np.all(self.solved_f2l3 == f2l3_state):
             step_reward = 20
             self._episode_ended = True
-            print('F2L3 solved:', self._state+1)
         elif action in ["U", "U'"]:
             step_reward = -1
         else:
@@ -665,7 +644,6 @@ class F2L3_cube(SpeedCube):
 
         if self._episode_ended or self._state > MAX_EXPLO:
             if self._episode_ended:
-                print('episode ended:', self._state)
                 self._solved_episodes += 1
             else:
                 self._failed_episodes += 1
@@ -698,7 +676,6 @@ class F2L4_cube(SpeedCube):
         if np.all(self.solved_f2l4 == f2l4_state):
             step_reward = 20
             self._episode_ended = True
-            print('F2L4 solved:', self._state+1)
         elif action in ["U", "U'"]:
             step_reward = -1
         else:
@@ -709,7 +686,6 @@ class F2L4_cube(SpeedCube):
 
         if self._episode_ended or self._state > MAX_EXPLO:
             if self._episode_ended:
-                print('episode ended:', self._state)
                 self._solved_episodes += 1
             else:
                 self._failed_episodes += 1
@@ -742,7 +718,6 @@ class F2Lpart1_cube(SpeedCube):
         if np.all(self.solved_f2l1 == f2l1_state):
             step_reward = 20
             self._episode_ended = True
-            print('F2L1 solved:', self._state+1)
         elif action in ["U", "U'"]:
             step_reward = -1
         else:
@@ -753,7 +728,6 @@ class F2Lpart1_cube(SpeedCube):
 
         if self._episode_ended or self._state > MAX_EXPLO:
             if self._episode_ended:
-                print('episode ended:', self._state)
                 self._solved_episodes += 1
             else:
                 self._failed_episodes += 1
@@ -837,7 +811,6 @@ class Cross_from_daisy(SpeedCube):
         if np.all(self.solved_cross == yellow_edges):
             step_reward = 20
             self._episode_ended = True
-            print('cross solved:', self._state+1)
         else:
             step_reward = -1
 
@@ -846,7 +819,6 @@ class Cross_from_daisy(SpeedCube):
 
         if self._episode_ended or self._state > MAX_EXPLO:
             if self._episode_ended:
-                print('episode ended:', self._state)
                 self._solved_episodes += 1
             else:
                 self._failed_episodes += 1
