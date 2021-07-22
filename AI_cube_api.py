@@ -247,7 +247,7 @@ def _predict_oll(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = np.argmax(oll_solver.predict(obs[np.newaxis, :]))
+        action = np.argmax(oll_solver.predict(obs[np.newaxis, :].astype(np.float32)))
         solution += oll_cube.move_list[action] + " "
         next = oll_cube.step(action)
         observation_, _, done, _ = next
