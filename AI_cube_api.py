@@ -99,12 +99,44 @@ def _cancel_moves(scramble):
     return simplified, modified
 
 
-def cancel_moves(scramble):
+def _cancel_triple_move(scramble):
+    scramble_size = len(scramble)
+    simplified = scramble.copy()
+    i = 0
+    j = 0
+    modified = False
+    while i < scramble_size - 2:
+        left = scramble[i]
+        center = scramble[i+1]
+        right = scramble[i+2]
+
+        if left == center == right:
+            simplified.pop(j)
+            simplified.pop(j)
+            simplified.pop(j)
+            i += 3
+            modified = True
+            if len(left) == 1:
+                simplified.insert(j, left + "'")
+            elif left[1] == "'":
+                simplified.insert(j, left[0])
+            elif left[1] == "2":
+                simplified.insert(j, left)
+        else:
+            i += 1
+            j += 1
+    # if scramble_size%2 == 1: simplified.append(scramble[-1])
+    return simplified, modified
+
+
+def _simplify_solution(solution: str):
     modification = True
-    s = scramble.strip().split(' ')
-    while modification:
-        s, modification = cancel_moves(s)
-    return s.strip()
+    modif = False
+    s = solution.strip().split(' ')
+    while modification or modif:
+        s, modification = _cancel_moves(s)
+        s, modif = _cancel_triple_move(s)
+    return (" ").join(s)
 
 
 def predict_f2l1(scramble: str):
@@ -280,20 +312,20 @@ def _predict_cross(scramble: str):
 
 def _predict_f2l(scramble: str):
     solution = predict_f2l1(scramble)
-    if solution.startswith("No"):
+    if solution == None:
         return "No F2L solution found"
     f2l2_solution = predict_f2l2(scramble + " " + solution)
-    if f2l2_solution.startswith("No"):
+    if f2l2_solution == None:
         return "No F2L solution found"
     else:
         solution = solution + " " + f2l2_solution
     f2l3_solution = predict_f2l3(scramble + " " + solution)
-    if f2l3_solution.startswith("No"):
+    if f2l3_solution == None:
         return "No F2L solution found"
     else:
         solution = solution + " " + f2l3_solution
     f2l4_solution = predict_f2l4(scramble + " " + solution)
-    if f2l4_solution.startswith("No"):
+    if f2l4_solution == None:
         return "No F2L solution found"
     else:
         solution = solution + " " + f2l4_solution
@@ -367,7 +399,7 @@ async def predict_cross(scramble: Scramble):
 async def predict_f2l(scramble: Scramble):
     scramble_str = scramble.dict()["scramble_s"]
 
-    return _predict_f2l(scramble_str)
+    return _simplify_solution(_predict_f2l(scramble_str))
 
 
 @app.post('/predict_oll')
