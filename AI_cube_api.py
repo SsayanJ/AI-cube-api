@@ -40,8 +40,10 @@ f2l2_model = 'models/0720-F2L2_model.h5'
 f2l3_model = 'models/0720-F2L3_model.h5'
 f2l4_model = 'models/0720-F2L4_model.h5'
 cross_model = "models/cross_model15moves-16Jul.h5"
-oll_model = 'models/OLL_model_good2k.h5'
+#oll_model = 'models/OLL_model_good2k.h5'
 pll_model = 'models/PLL_model_good10k.h5'
+
+oll_model = 'models/oll_model'
 
 input_cross = 24
 input_oll = 20
