@@ -35,16 +35,20 @@ app.add_middleware(
 
 
 # Loading models
-f2l1_model = 'models/0720-F2L1_model.h5'
-f2l2_model = 'models/0720-F2L2_model.h5'
+#f2l1_model = 'models/0720-F2L1_model.h5'
+#f2l2_model = 'models/0720-F2L2_model.h5'
 f2l3_model = 'models/0720-F2L3_model.h5'
-f2l4_model = 'models/0720-F2L4_model.h5'
+#f2l4_model = 'models/0720-F2L4_model.h5'
 cross_model = "models/cross_model15moves-16Jul.h5"
 #oll_model = 'models/OLL_model_good2k.h5'
-pll_model = 'models/PLL_model_good10k.h5'
+#pll_model = 'models/PLL_model_good10k.h5'
 daisy_model = 'models/0721-daisy_model.h5'
 cross_from_daisy_model = 'models/Cross_from_daisy_model.h5'
 oll_model = 'models/oll_model'
+pll_model = 'models/pll_model'
+f2l1_model = 'models/f2l1_model'
+f2l2_model = 'models/f2l2_model'
+f2l4_model = 'models/f2l4_model'
 
 input_cross = 24
 input_oll = 20
@@ -147,7 +151,7 @@ def predict_f2l1(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = np.argmax(f2l1_solver.predict(obs[np.newaxis, :]))
+        action = np.argmax(f2l1_solver.predict(obs[np.newaxis, :].astype(np.float32)))
         solution += f2l1_cube.move_list[action] + " "
         next = f2l1_cube.step(action)
         observation_, _, done, _ = next
@@ -169,7 +173,7 @@ def predict_f2l2(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = np.argmax(f2l2_solver.predict(obs[np.newaxis, :]))
+        action = np.argmax(f2l2_solver.predict(obs[np.newaxis, :].astype(np.float32)))
         solution += f2l2_cube.move_list[action] + " "
         next = f2l2_cube.step(action)
         observation_, _, done, _ = next
@@ -213,7 +217,7 @@ def predict_f2l4(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = np.argmax(f2l4_solver.predict(obs[np.newaxis, :]))
+        action = np.argmax(f2l4_solver.predict(obs[np.newaxis, :].astype(np.float32)))
         solution += f2l4_cube.move_list[action] + " "
         next = f2l4_cube.step(action)
         observation_, _, done, _ = next
@@ -364,7 +368,7 @@ def _predict_pll(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = np.argmax(pll_solver.predict(obs[np.newaxis, :]))
+        action = np.argmax(pll_solver.predict(obs[np.newaxis, :].astype(np.float32)))
         solution += pll_cube.move_list[action] + " "
         next = pll_cube.step(action)
         observation_, _, done, _ = next
