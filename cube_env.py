@@ -31,7 +31,7 @@ pll_moves = get_algs(PLL_algs)
 
 cube_colors = {0: "W", 1: "G", 2: "R", 3: 'B', 4: "O", 5: 'Y'}
 move_list = ["R", "L", "U", "D", "F", "B", "Rp", "Lp", "Up", "Dp", "Fp", "Bp"]
-daisy_moves = ["R", "L", "F", "B", "Rp", "Lp", "Fp", "Bp"]
+daisy_moves = ["R", "L", "F", "B", "U", "D"]
 cross_from_daisy_moves = ["R2", "L2", "U", "F2", "B2", "Up"]
 
 # F2L1 - Front-Right F2L
