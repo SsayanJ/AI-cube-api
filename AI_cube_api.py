@@ -43,7 +43,7 @@ cross_model = "models/cross_model15moves-16Jul.h5"
 #oll_model = 'models/OLL_model_good2k.h5'
 #pll_model = 'models/PLL_model_good10k.h5'
 daisy_model = 'models/daisy_model_nohack.h5'
-cross_from_daisy_model = 'models/Cross_from_daisy_model.h5'
+cross_from_daisy_model = 'models/Cross_from_daisy_model_new.h5'
 oll_model = 'models/oll_model'
 pll_model = 'models/pll_model'
 f2l1_model = 'models/f2l1_model'
@@ -296,7 +296,7 @@ def _predict_cross(scramble: str):
     solution = _predict_daisy(scramble)
     if solution.startswith("No"):
         print('Daisy error')
-        return "No daisy solution found"
+        return "No Daisy solution found"
     # print(solution)
     cross_solution = _predict_cross_from_daisy(scramble + " " + solution)
     if cross_solution.startswith("No"):
@@ -310,20 +310,24 @@ def _predict_cross(scramble: str):
 def _predict_f2l(scramble: str):
     solution = predict_f2l1(scramble)
     if solution == None:
-        return "No F2L solution found"
+        print("1 - F2L1 error")
+        return "No F2L1 solution found"
     f2l2_solution = predict_f2l2(scramble + " " + solution)
     if f2l2_solution == None:
-        return "No F2L solution found"
+        print("2 - F2L2 error")
+        return "No F2L2 solution found"
     else:
         solution = solution + " " + f2l2_solution
     f2l3_solution = predict_f2l3(scramble + " " + solution)
     if f2l3_solution == None:
-        return "No F2L solution found"
+        print("3 - F2L3 error")
+        return "No F2L3 solution found"
     else:
         solution = solution + " " + f2l3_solution
     f2l4_solution = predict_f2l4(scramble + " " + solution)
     if f2l4_solution == None:
-        return "No F2L solution found"
+        print("4 - F2L4 error")
+        return "No F2L4 solution found"
     else:
         solution = solution + " " + f2l4_solution
 
