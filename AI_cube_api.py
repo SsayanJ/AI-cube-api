@@ -43,7 +43,7 @@ cross_model = "models/cross_model15moves-16Jul.h5"
 #oll_model = 'models/OLL_model_good2k.h5'
 #pll_model = 'models/PLL_model_good10k.h5'
 daisy_model = 'models/daisy_model_nohack.h5'
-cross_from_daisy_model = 'models/Cross_from_daisy_model_new.h5'
+cross_from_daisy_model = 'models/Cross_from_daisy_model_sat.h5'
 oll_model = 'models/oll_model'
 pll_model = 'models/pll_model'
 f2l1_model = 'models/f2l1_model'
@@ -186,7 +186,8 @@ def predict_f2l3(scramble: str):
     solution = ""
     done = False
     while not done:
-        action = np.argmax(f2l3_solver.predict(obs[np.newaxis, :].astype(np.float32)))
+        action = np.argmax(f2l3_solver.predict(
+            obs[np.newaxis, :].astype(np.float32)))
         solution += f2l3_cube.move_list[action] + " "
         next = f2l3_cube.step(action)
         observation_, _, done, _ = next
